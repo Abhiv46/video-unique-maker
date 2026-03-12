@@ -1,0 +1,620 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>वीडियो यूनिक मेकर - अपने वीडियो को बनाएं यूनिक</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Poppins', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(145deg, #0f172a 0%, #1e293b 100%);
+            min-height: 100vh;
+            padding: 30px 20px;
+            color: #e2e8f0;
+        }
+        
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        
+        .header h1 {
+            font-size: 3em;
+            margin-bottom: 10px;
+            background: linear-gradient(135deg, #60a5fa, #a78bfa);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .header p {
+            color: #94a3b8;
+            font-size: 1.1em;
+        }
+        
+        .warning-box {
+            background: rgba(251, 191, 36, 0.1);
+            border-left: 4px solid #f59e0b;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            backdrop-filter: blur(10px);
+        }
+        
+        .warning-box h3 {
+            color: #fbbf24;
+            margin-bottom: 10px;
+            font-size: 1.2em;
+        }
+        
+        .warning-box p {
+            color: #fcd34d;
+            font-size: 0.95em;
+            line-height: 1.6;
+        }
+        
+        .main-card {
+            background: rgba(30, 41, 59, 0.7);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .upload-area {
+            border: 2px dashed #475569;
+            border-radius: 15px;
+            padding: 50px 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-bottom: 30px;
+        }
+        
+        .upload-area:hover {
+            border-color: #3b82f6;
+            background: rgba(59, 130, 246, 0.1);
+        }
+        
+        .upload-area i {
+            font-size: 50px;
+            color: #60a5fa;
+            margin-bottom: 15px;
+        }
+        
+        .upload-area h3 {
+            font-size: 1.5em;
+            margin-bottom: 10px;
+            color: #f1f5f9;
+        }
+        
+        .upload-area p {
+            color: #94a3b8;
+            margin-bottom: 20px;
+        }
+        
+        .file-info {
+            display: none;
+            background: #1e293b;
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 20px;
+        }
+        
+        .file-info.show {
+            display: block;
+        }
+        
+        .file-details {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: #cbd5e1;
+        }
+        
+        .file-name {
+            max-width: 300px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        
+        .change-file {
+            color: #3b82f6;
+            cursor: pointer;
+            font-size: 0.9em;
+        }
+        
+        .change-file:hover {
+            text-decoration: underline;
+        }
+        
+        .progress-section {
+            margin: 30px 0;
+            display: none;
+        }
+        
+        .progress-section.show {
+            display: block;
+        }
+        
+        .progress-bar {
+            width: 100%;
+            height: 10px;
+            background: #334155;
+            border-radius: 10px;
+            overflow: hidden;
+            margin-bottom: 10px;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #3b82f6, #8b5cf6);
+            width: 0%;
+            transition: width 0.3s;
+            border-radius: 10px;
+        }
+        
+        .progress-status {
+            text-align: center;
+            color: #94a3b8;
+        }
+        
+        .process-btn {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.2em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s;
+            margin: 20px 0;
+        }
+        
+        .process-btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px -10px #3b82f6;
+        }
+        
+        .process-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        .result-card {
+            display: none;
+            background: #1e293b;
+            border-radius: 15px;
+            padding: 30px;
+            margin-top: 30px;
+            border: 1px solid #334155;
+        }
+        
+        .result-card.show {
+            display: block;
+        }
+        
+        .success-icon {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        
+        .success-icon i {
+            font-size: 60px;
+            color: #10b981;
+        }
+        
+        .file-stats {
+            background: #0f172a;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+        
+        .stat-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            color: #cbd5e1;
+        }
+        
+        .stat-label {
+            color: #94a3b8;
+        }
+        
+        .stat-value {
+            font-weight: 600;
+            color: #f1f5f9;
+        }
+        
+        .download-btn {
+            display: inline-block;
+            width: 100%;
+            padding: 15px;
+            background: #10b981;
+            color: white;
+            text-decoration: none;
+            border-radius: 10px;
+            text-align: center;
+            font-weight: 600;
+            margin: 10px 0;
+            transition: background 0.3s;
+        }
+        
+        .download-btn:hover {
+            background: #059669;
+        }
+        
+        .reset-btn {
+            width: 100%;
+            padding: 12px;
+            background: transparent;
+            color: #94a3b8;
+            border: 1px solid #475569;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+        
+        .reset-btn:hover {
+            background: #334155;
+            color: #f1f5f9;
+        }
+        
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-top: 40px;
+        }
+        
+        .feature-item {
+            text-align: center;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+        }
+        
+        .feature-item i {
+            font-size: 30px;
+            color: #60a5fa;
+            margin-bottom: 10px;
+        }
+        
+        .feature-item h4 {
+            color: #e2e8f0;
+            margin-bottom: 5px;
+        }
+        
+        .feature-item p {
+            color: #94a3b8;
+            font-size: 0.9em;
+        }
+        
+        .error-message {
+            background: #ef4444;
+            color: white;
+            padding: 15px;
+            border-radius: 10px;
+            margin: 20px 0;
+            display: none;
+        }
+        
+        .error-message.show {
+            display: block;
+        }
+        
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2em;
+            }
+            
+            .main-card {
+                padding: 20px;
+            }
+        }
+    </style>
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1><i class="fas fa-magic"></i> वीडियो यूनिक मेकर</h1>
+            <p>अपने वीडियो को बनाएं 100% यूनिक और रेडी फॉर अपलोड</p>
+        </div>
+        
+        <!-- Warning Box -->
+        <div class="warning-box">
+            <h3><i class="fas fa-exclamation-triangle"></i> कानूनी चेतावनी</h3>
+            <p>यह टूल केवल शैक्षिक उद्देश्य और निजी उपयोग के लिए है। कॉपीराइट सामग्री को बिना अनुमति के संशोधित करना और अपलोड करना कानूनन अपराध हो सकता है। कृपया केवल अपने खुद के बनाए या रॉयल्टी-फ्री वीडियो पर इस्तेमाल करें।</p>
+        </div>
+        
+        <!-- Main Card -->
+        <div class="main-card">
+            <!-- Upload Area -->
+            <div class="upload-area" id="uploadArea">
+                <i class="fas fa-cloud-upload-alt"></i>
+                <h3>वीडियो अपलोड करें</h3>
+                <p>यहाँ क्लिक करें या ड्रैग एंड ड्रॉप करें</p>
+                <input type="file" id="fileInput" accept="video/*" style="display: none;">
+                <p style="font-size: 0.9em;">MP4, AVI, MOV, MKV, WEBM (Max 200MB)</p>
+            </div>
+            
+            <!-- File Info -->
+            <div class="file-info" id="fileInfo">
+                <div class="file-details">
+                    <span class="file-name" id="fileName"></span>
+                    <span class="file-size" id="fileSize"></span>
+                    <span class="change-file" onclick="resetUpload()">बदलें <i class="fas fa-edit"></i></span>
+                </div>
+            </div>
+            
+            <!-- Progress Section -->
+            <div class="progress-section" id="progressSection">
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressFill"></div>
+                </div>
+                <div class="progress-status" id="progressStatus">
+                    <i class="fas fa-spinner fa-spin"></i> प्रोसेसिंग... कृपया प्रतीक्षा करें
+                </div>
+            </div>
+            
+            <!-- Error Message -->
+            <div class="error-message" id="errorMessage"></div>
+            
+            <!-- Process Button -->
+            <button class="process-btn" id="processBtn" disabled onclick="processVideo()">
+                <i class="fas fa-play"></i> वीडियो प्रोसेस करें
+            </button>
+            
+            <!-- Result Card -->
+            <div class="result-card" id="resultCard">
+                <div class="success-icon">
+                    <i class="fas fa-check-circle"></i>
+                </div>
+                <h3 style="text-align: center; margin-bottom: 20px;">सफलता! वीडियो तैयार है</h3>
+                
+                <div class="file-stats" id="fileStats">
+                    <!-- Stats will be filled by JavaScript -->
+                </div>
+                
+                <a href="#" class="download-btn" id="downloadBtn" download>
+                    <i class="fas fa-download"></i> वीडियो डाउनलोड करें
+                </a>
+                
+                <button class="reset-btn" onclick="resetAll()">
+                    <i class="fas fa-redo"></i> नया वीडियो प्रोसेस करें
+                </button>
+            </div>
+            
+            <!-- Features -->
+            <div class="features-grid">
+                <div class="feature-item">
+                    <i class="fas fa-cut"></i>
+                    <h4>क्रॉपिंग</h4>
+                    <p>बॉर्डर क्रॉप करके फ्रेम बदलें</p>
+                </div>
+                <div class="feature-item">
+                    <i class="fas fa-tachometer-alt"></i>
+                    <h4>स्पीड चेंज</h4>
+                    <p>थोड़ा फास्ट या स्लो करें</p>
+                </div>
+                <div class="feature-item">
+                    <i class="fas fa-palette"></i>
+                    <h4>कलर एडजस्ट</h4>
+                    <p>ब्राइटनेस/कंट्रास्ट बदलें</p>
+                </div>
+                <div class="feature-item">
+                    <i class="fas fa-volume-up"></i>
+                    <h4>ऑडियो ट्वीक</h4>
+                    <p>ऑडियो वॉल्यूम एडजस्ट करें</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        let selectedFile = null;
+        
+        // Upload area click handler
+        document.getElementById('uploadArea').addEventListener('click', () => {
+            document.getElementById('fileInput').click();
+        });
+        
+        // File input change handler
+        document.getElementById('fileInput').addEventListener('change', (e) => {
+            handleFileSelect(e.target.files[0]);
+        });
+        
+        // Drag and drop handlers
+        document.getElementById('uploadArea').addEventListener('dragover', (e) => {
+            e.preventDefault();
+            document.getElementById('uploadArea').style.borderColor = '#3b82f6';
+        });
+        
+        document.getElementById('uploadArea').addEventListener('dragleave', (e) => {
+            e.preventDefault();
+            document.getElementById('uploadArea').style.borderColor = '#475569';
+        });
+        
+        document.getElementById('uploadArea').addEventListener('drop', (e) => {
+            e.preventDefault();
+            document.getElementById('uploadArea').style.borderColor = '#475569';
+            const file = e.dataTransfer.files[0];
+            handleFileSelect(file);
+        });
+        
+        function handleFileSelect(file) {
+            if (!file) return;
+            
+            // Check file type
+            const validTypes = ['video/mp4', 'video/avi', 'video/quicktime', 'video/x-matroska', 'video/webm'];
+            if (!validTypes.includes(file.type) && !file.name.match(/\.(mp4|avi|mov|mkv|webm|flv|wmv)$/i)) {
+                showError('कृपया एक वैध वीडियो फाइल चुनें');
+                return;
+            }
+            
+            // Check file size (200MB)
+            if (file.size > 200 * 1024 * 1024) {
+                showError('फाइल साइज 200MB से कम होनी चाहिए');
+                return;
+            }
+            
+            selectedFile = file;
+            
+            // Show file info
+            document.getElementById('fileName').textContent = file.name;
+            document.getElementById('fileSize').textContent = formatBytes(file.size);
+            document.getElementById('fileInfo').classList.add('show');
+            
+            // Hide error if any
+            hideError();
+            
+            // Enable process button
+            document.getElementById('processBtn').disabled = false;
+        }
+        
+        function formatBytes(bytes) {
+            if (bytes === 0) return '0 Bytes';
+            const k = 1024;
+            const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+        }
+        
+        function showError(message) {
+            const errorDiv = document.getElementById('errorMessage');
+            errorDiv.textContent = message;
+            errorDiv.classList.add('show');
+            
+            // Auto hide after 5 seconds
+            setTimeout(hideError, 5000);
+        }
+        
+        function hideError() {
+            document.getElementById('errorMessage').classList.remove('show');
+        }
+        
+        function resetUpload() {
+            selectedFile = null;
+            document.getElementById('fileInput').value = '';
+            document.getElementById('fileInfo').classList.remove('show');
+            document.getElementById('processBtn').disabled = true;
+            hideError();
+        }
+        
+        async function processVideo() {
+            if (!selectedFile) {
+                showError('पहले वीडियो सेलेक्ट करें');
+                return;
+            }
+            
+            // Show progress section
+            document.getElementById('progressSection').classList.add('show');
+            document.getElementById('processBtn').disabled = true;
+            
+            // Simulate progress (since we can't get real progress from backend)
+            let progress = 0;
+            const progressInterval = setInterval(() => {
+                progress += 2;
+                if (progress <= 90) {
+                    document.getElementById('progressFill').style.width = progress + '%';
+                }
+            }, 1000);
+            
+            const formData = new FormData();
+            formData.append('video', selectedFile);
+            
+            try {
+                const response = await fetch('/upload', {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                clearInterval(progressInterval);
+                
+                if (!response.ok) {
+                    const error = await response.json();
+                    throw new Error(error.error || 'कुछ गलत हो गया');
+                }
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    // Complete progress
+                    document.getElementById('progressFill').style.width = '100%';
+                    
+                    // Show result
+                    document.getElementById('progressStatus').innerHTML = '<i class="fas fa-check"></i> पूरा हुआ!';
+                    
+                    // Update stats
+                    document.getElementById('fileStats').innerHTML = `
+                        <div class="stat-row">
+                            <span class="stat-label">फाइल का नाम:</span>
+                            <span class="stat-value">${selectedFile.name}</span>
+                        </div>
+                        <div class="stat-row">
+                            <span class="stat-label">असल साइज:</span>
+                            <span class="stat-value">${data.original_size}</span>
+                        </div>
+                        <div class="stat-row">
+                            <span class="stat-label">नया साइज:</span>
+                            <span class="stat-value">${data.new_size}</span>
+                        </div>
+                        <div class="stat-row">
+                            <span class="stat-label">स्टेटस:</span>
+                            <span class="stat-value">✅ यूनिक बना दिया गया</span>
+                        </div>
+                    `;
+                    
+                    // Set download link
+                    document.getElementById('downloadBtn').href = data.download_url;
+                    
+                    // Show result card after a short delay
+                    setTimeout(() => {
+                        document.getElementById('progressSection').classList.remove('show');
+                        document.getElementById('resultCard').classList.add('show');
+                    }, 500);
+                } else {
+                    throw new Error(data.error || 'प्रोसेसिंग फेल हुई');
+                }
+                
+            } catch (error) {
+                clearInterval(progressInterval);
+                document.getElementById('progressSection').classList.remove('show');
+                showError(error.message);
+                document.getElementById('processBtn').disabled = false;
+            }
+        }
+        
+        function resetAll() {
+            selectedFile = null;
+            document.getElementById('fileInput').value = '';
+            document.getElementById('fileInfo').classList.remove('show');
+            document.getElementById('processBtn').disabled = true;
+            document.getElementById('resultCard').classList.remove('show');
+            document.getElementById('progressFill').style.width = '0%';
+            document.getElementById('progressStatus').innerHTML = '<i class="fas fa-spinner fa-spin"></i> प्रोसेसिंग... कृपया प्रतीक्षा करें';
+            hideError();
+        }
+    </script>
+</body>
+</html>
